@@ -1,2 +1,3 @@
-# SmartBrain project 
-test
+# SmartBrain 
+React, Node
+
