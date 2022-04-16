@@ -5,6 +5,7 @@ import Particles from "react-tsparticles";
 import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
+import Clarifai from 'clarifai';
 import 'tachyons';
 
 const particleOptions = {
@@ -51,6 +52,39 @@ const particleOptions = {
         },
       },
 },}
+const raw = JSON.stringify({
+  "user_app_id": {
+        "user_id": "xqrl2mku7xik",
+        "app_id": "646374474826499e92008216527d3e06"
+    },
+  "inputs": [
+    {
+      "data": {
+        "image": {
+          "url": "https://samples.clarifai.com/metro-north.jpg"
+        }
+      }
+    }
+  ]
+});
+
+const requestOptions = {
+  method: 'POST',
+  headers: {
+    'Accept': 'application/json',
+    'Authorization': 'Key 5f6a999ee5ad4c7093bc877c3a56674e'
+  },
+  body: raw
+};
+const app = new Clarifai.App({
+  apiKey: '5f6a999ee5ad4c7093bc877c3a56674e'
+ });
+
+// NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
+// https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
+// this will default to the latest version_id
+
+
 
 class App extends React.Component {
   constructor(){
@@ -64,6 +98,10 @@ class App extends React.Component {
   }
   onButtonSubmit = () => {
     console.log('click');
+    fetch(`https://api.clarifai.com/v2/models/face-detection/versions/45fb9a671625463fa646c3523a3087d5/outputs`, requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(JSON.parse(result, null, 2).outputs[0].data))
+    .catch(error => console.log('error', error));
   }
   render() {
     return (
@@ -77,8 +115,10 @@ class App extends React.Component {
         <Rank />
         <ImageLinkForm 
           onInputChange={this.onInputChange} 
-          onButtonSubmit={this.onButtonSubmit}/>
-          {/* <FaceRecognition /> */}
+          onButtonSubmit={this.onButtonSubmit}
+
+          />
+          <FaceRecognition />
       </div>
     );
   }
