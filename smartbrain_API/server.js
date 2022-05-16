@@ -53,6 +53,19 @@ app.post('/register', (req, res) => {
     res.json(users[users.length-1]);
     
 })
+
+app.get('/profile/:id', (req, res) => {
+    const { id } = req.params;
+    const found = database.users.find(element => element.id ===id)
+    found ? res.json(found) : res.status(404).json('user not found')
+})
+
+app.put('/image', (req, res) => {
+    const {id} = req.body;
+    const found = database.users.find(element => element.id ===id)
+    found ? res.json(found.entries++) : res.status(400).json('user not found')
+
+})
 app.listen(3000, ()=> {
     console.log('app is running on port 3000')
 })
