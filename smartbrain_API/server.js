@@ -1,5 +1,5 @@
 import express from 'express';
-
+import bcrypt from 'bcrypt-nodejs';
 const app = express();
 app.use(express.json());
 
@@ -30,26 +30,32 @@ app.get('/', (req, res) => {
 })
 
 app.post('/signin', (req, res) => {
-    if(req.body.email === database.users[0].email 
-        && req.body.password === database.users[0].password)
-        res.json("recived");
-    else {
-        res.status(400).json('login error');
-    }
+    
+   
+    (req.body.email === database.users[0].email &&  
+        req.body.password === database.users[0].password)
+    ?
+    res.json("recived")
+    :
+    res.status(400).json('login error');
+    
+    
 
 })
 
 app.post('/register', (req, res) => {
     const { name, email, password} = req.body;
-    
-    users.push({
-        id: '126',
-        name : name,
-        email: email,
-        password: password,
-        entries: 0,
-        joined: new Date()
+    bcrypt.hash(password,null,null, function (err,hash){
+        users.push({
+            id: '126',
+            name : name,
+            email: email,
+            password: hash,
+            entries: 0,
+            joined: new Date()
+        });
     });
+   
     res.json(users[users.length-1]);
     
 })
@@ -66,6 +72,18 @@ app.put('/image', (req, res) => {
     found ? res.json(found.entries++) : res.status(400).json('user not found')
 
 })
+
+bcrypt.hash("bacon",null,null, function (err,hash){
+
+});
+
+bcrypt.compare("bacon", null, function (err,res){
+
+});
+
+bcrypt.compare('veggies', null, function (err,res){
+
+});
 app.listen(3000, ()=> {
     console.log('app is running on port 3000')
-})
+});
