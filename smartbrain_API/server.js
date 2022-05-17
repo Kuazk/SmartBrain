@@ -1,7 +1,9 @@
 import express from 'express';
 import bcrypt from 'bcrypt-nodejs';
+import cors from 'cors';
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const database= {
     users: [
@@ -30,14 +32,17 @@ app.get('/', (req, res) => {
 })
 
 app.post('/signin', (req, res) => {
+    bcrypt.hash(req.body.password,null,null, function (err,hash){
+        bcrypt.compare(req.body.password, hash, function (err,result){
+            ((req.body.email === database.users[0].email) &&  
+            result)
+            ?
+            res.json("recived")
+            :
+            res.status(400).json('login error');
+        });
+    });
     
-   
-    (req.body.email === database.users[0].email &&  
-        req.body.password === database.users[0].password)
-    ?
-    res.json("recived")
-    :
-    res.status(400).json('login error');
     
     
 

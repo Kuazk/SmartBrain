@@ -72,9 +72,26 @@ class App extends React.Component {
       input: '',
       imageUrl: '',
       box: {},
-      route: 'signin'
+      route: 'signin',
+      user: {
+        id: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      },
     }
   };
+
+  loadUser = (data) =>{
+    this.setState({user : {
+      id: data.id,
+      name: data.name, 
+      entries: data.entries,
+      joined: data.joined,
+
+    }})
+  }
+
 
   calculateFaceLocation =(result) => {
 
@@ -170,7 +187,7 @@ class App extends React.Component {
             : (
               this.state.route === 'signin'
               ? <Signin onRouteChange={this.onRouteChange}/>
-              : <Register onRouteChange={this.onRouteChange}/>
+              : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
             )
             
         }
