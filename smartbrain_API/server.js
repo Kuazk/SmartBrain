@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt-nodejs';
 import cors from 'cors';
 import knex from 'knex';
 
+const PORT = process.env.PORT;
 const db = knex({
     client: 'pg',
     connection: {

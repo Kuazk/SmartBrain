@@ -65,7 +65,18 @@ const particleOptions = {
 // this will default to the latest version_id
 
 
-
+const initialState = {
+      input: '',
+      imageUrl: '',
+      box: {},
+      route: 'signin',
+      user: {
+        id: '',
+        email: '',
+        entries: 0,
+        joined: ''
+}
+}
 class App extends React.Component {
   constructor(){
     super();
@@ -174,6 +185,9 @@ class App extends React.Component {
 
   }
   onRouteChange = (input) => {
+    if (input === 'signin'){
+      this.setState(initialState)
+    }
     this.setState({route : input})
   
   }
