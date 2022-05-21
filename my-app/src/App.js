@@ -11,6 +11,7 @@ import Register from './components/Register/Register';
 
 import 'tachyons';
 
+// dynamically moving on back group
 const particleOptions = {
   fpsLimit: 60,
     particles: {
@@ -152,7 +153,23 @@ class App extends React.Component {
 
     fetch(`https://api.clarifai.com/v2/models/face-detection/versions/45fb9a671625463fa646c3523a3087d5/outputs`, requestOptions)
     .then(response => response.text())
-    .then(result => this.displayFaceBox(this.calculateFaceLocation(result)))
+    .then(result => {
+      if(result) {
+        fetch('http://localhost:3000/image',{ 
+          method: 'put',
+          headers: {'content-Type': 'application/json'},
+          body: JSON.stringify({
+            id: this.state.user.id
+          })
+        })
+          .then(response => response.json())
+          .then(count => {
+            this.setState(Object.assign(this.state.user, {entries: count}))
+
+          })
+
+      }
+      this.displayFaceBox(this.calculateFaceLocation(result))})
     .catch(error => console.log('error', error));
 
   }
@@ -174,7 +191,7 @@ class App extends React.Component {
             <div>
             <Navigation onRouteChange={this.onRouteChange}/>
             <Logo />
-            <Rank />
+            <Rank name={this.state.user.name} entries={this.state.user.entries} />
             
             <ImageLinkForm 
               onInputChange={this.onInputChange} 
@@ -186,7 +203,7 @@ class App extends React.Component {
             
             : (
               this.state.route === 'signin'
-              ? <Signin onRouteChange={this.onRouteChange}/>
+              ? <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
               : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange}/>
             )
             
